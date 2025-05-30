@@ -12,7 +12,6 @@ class Question extends Model
     protected $fillable = [
         'assessment_id',
         'question_text',
-        'question_type',
     ];
     
     public $timestamps = false;

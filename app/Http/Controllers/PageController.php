@@ -83,7 +83,7 @@ class PageController extends Controller
     public function assessmentManagement()
     {
         $assessments = Assessment::withCount('questions')->get();
-        return view('pengelolaan', compact('assessments'));
+        return view('pengelolaanassessment', compact('assessments'));
     }
     
     public function createAssessment()
@@ -98,8 +98,7 @@ class PageController extends Controller
     
     public function manageQuestions(Assessment $assessment)
     {
-        $questions = $assessment->questions()->with('options')->get();
-        return view('admin.questions.index', compact('assessment', 'questions'));
+        return view('questions', compact('assessment'));
     }
 
     public function userAssessments()

@@ -30,13 +30,8 @@
                 <textarea name="description" id="description" rows="4" class="w-full border rounded px-3 py-2" required>{{ old('description') }}</textarea>
             </div>
 
-            <div class="mb-6 flex items-center">
-                <input type="checkbox" name="is_active" id="is_active" class="mr-2" {{ old('is_active', true) ? 'checked' : '' }}>
-                <label for="is_active" class="text-gray-700">Aktifkan asesmen ini</label>
-            </div>
-
             <div class="text-center">
-                <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">Simpan</button>
+                <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">Lanjutkan</button>
             </div>
         </form>
     </div>

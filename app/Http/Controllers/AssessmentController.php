@@ -14,13 +14,13 @@ class AssessmentController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'description' => 'required|string',
-            'is_active' => 'boolean',
         ]);
-        
-        Assessment::create($validated);
-        
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Asesmen berhasil dibuat!');
+        $validated['is_active'] = true;
+    
+        $assessment = Assessment::create($validated);
+
+        return redirect()->route('admin.questions', $assessment->id)
+        ->with('success', 'Asesmen berhasil dibuat, silakan tambahkan pertanyaan!');
     }
     
     public function update(Request $request, Assessment $assessment)
@@ -65,20 +65,16 @@ class AssessmentController extends Controller
         $validated = $request->validate([
             'assessment_id' => 'required|exists:assessments,id',
             'question_text' => 'required|string',
-            'question_type' => 'required|in:pilihan_ganda,skala_likert,gambar,drag_drop',
-            'options' => 'required|array|min:2',
+            'options' => 'required|array',
             'options.*.option_text' => 'required|string',
             'options.*.score' => 'required|integer',
         ]);
-        
-        // Create question
+    
         $question = Question::create([
             'assessment_id' => $validated['assessment_id'],
             'question_text' => $validated['question_text'],
-            'question_type' => $validated['question_type'],
         ]);
-        
-        // Create options
+    
         foreach ($validated['options'] as $option) {
             Option::create([
                 'question_id' => $question->id,
@@ -86,16 +82,36 @@ class AssessmentController extends Controller
                 'score' => $option['score'],
             ]);
         }
-        
+    
         return redirect()->route('admin.questions', $validated['assessment_id'])
             ->with('success', 'Pertanyaan berhasil ditambahkan!');
     }
+
+    public function multiStore(Request $request)
+{
+    foreach ($request->questions as $questionData) {
+        $question = Question::create([
+            'assessment_id' => $request->assessment_id,
+            'question_text' => $questionData['question_text'],
+        ]);
+
+        foreach ($questionData['options'] as $option) {
+            Option::create([
+                'question_id' => $question->id,
+                'option_text' => $option['option_text'],
+                'score' => $option['score'],
+            ]);
+        }
+    }
+
+    return redirect()->back()->with('success', 'Semua pertanyaan berhasil ditambahkan!');
+}
+
     
     public function updateQuestion(Request $request, Question $question)
     {
         $validated = $request->validate([
             'question_text' => 'required|string',
-            'question_type' => 'required|in:pilihan_ganda,skala_likert,gambar,drag_drop',
             'options' => 'required|array|min:2',
             'options.*.id' => 'sometimes|exists:options,id',
             'options.*.option_text' => 'required|string',
@@ -105,7 +121,6 @@ class AssessmentController extends Controller
         // Update question
         $question->update([
             'question_text' => $validated['question_text'],
-            'question_type' => $validated['question_type'],
         ]);
         
         // Handle options

@@ -43,6 +43,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Questions and options
     Route::get('/assessments/{assessment}/questions', [PageController::class, 'manageQuestions'])->name('admin.questions');
     Route::post('/questions', [AssessmentController::class, 'storeQuestion'])->name('admin.questions.store');
+    Route::post('/admin/questions/multi-store', [AssessmentController::class, 'multiStore'])->name('admin.questions.multi_store');
     Route::put('/questions/{question}', [AssessmentController::class, 'updateQuestion'])->name('admin.questions.update');
     Route::delete('/questions/{question}', [AssessmentController::class, 'destroyQuestion'])->name('admin.questions.destroy');
 });
