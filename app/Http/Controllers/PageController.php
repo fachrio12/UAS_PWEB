@@ -31,7 +31,7 @@ class PageController extends Controller
 
     public function registerPage()
     {
-        return view('register');
+        return view('userReview\register');
     }
 
     public function adminDashboard(Request $request)
@@ -62,6 +62,8 @@ class PageController extends Controller
         return view('profile', compact('user'));
     }
 
+    
+
     public function updateAdminProfile(Request $request)
     {
         $user = Auth::user();
@@ -91,10 +93,10 @@ class PageController extends Controller
         return view('createassessment');
     }
     
-    public function editAssessment(Assessment $assessment)
-    {
-        return view('admin.assessments.edit', compact('assessment'));
-    }
+    // public function editAssessment(Assessment $assessment)
+    // {
+    //     return view('admin.assessments.edit', compact('assessment'));
+    // }
     
     public function manageQuestions(Assessment $assessment)
     {
@@ -103,12 +105,12 @@ class PageController extends Controller
 
     public function userAssessments()
     {
-        $assessments = Assessment::where('is_active', true)->get();
+        $assessments = Assessment::withCount('questions')->where('is_active', true)->get();
         $completedAssessments = UserAssessmentSession::where('user_id', Auth::id())
             ->pluck('assessment_id')
             ->toArray();
             
-        return view('gamifikasi', compact('assessments', 'completedAssessments'));
+        return view('userReview\daftarassessmen', compact('assessments', 'completedAssessments'));
     }
 
     public function takeAssessment(Assessment $assessment)
@@ -124,13 +126,31 @@ class PageController extends Controller
         }
         
         $questions = $assessment->questions()->with('options')->get();
-        return view('user.assessments.take', compact('assessment', 'questions'));
+        return view('userReview\userassessmen', compact('assessment', 'questions'));
     }
     
     public function userProfile()
     {
         $user = Auth::user();
-        return view('profile', compact('user'));
+        return view('userReview\profileUser', compact('user'));
+    }
+
+    public function updateUserProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:Laki-laki,Perempuan',
+        ]);
+
+        $user->name = $request->name;
+        $user->birth_date = $request->birth_date;
+        $user->gender = $request->gender;
+        $user->save();
+
+        return redirect()->route('user.profile')->with('success', 'Profil berhasil diperbarui.');
     }
     
     public function userProgress()

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Admin')
+@section('title', 'Profil Pengguna')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gray-100">
@@ -13,7 +13,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.profile.update') }}" method="POST">
+        <form action="{{ route('user.profile.update') }}" method="POST">
             @csrf
 
             <div class="mb-4">

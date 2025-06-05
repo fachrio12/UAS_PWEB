@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assessments/{assessment}', [PageController::class, 'takeAssessment'])->name('user.assessments.take');
     Route::post('/assessments/{assessment}/submit', [UserController::class, 'submitAssessment'])->name('user.assessments.submit');
     Route::get('/profile', [PageController::class, 'userProfile'])->name('user.profile');
+    Route::post('/profile/update', [PageController::class, 'updateUserProfile'])->name('user.profile.update');
     Route::get('/progress', [PageController::class, 'userProgress'])->name('user.progress');
     Route::get('/results/{session}', [PageController::class, 'viewResults'])->name('user.results');
 });

@@ -29,13 +29,6 @@
                     @enderror
                 </div>
                 
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center">
-                        <input type="checkbox" name="remember" id="remember" class="mr-2" {{ old('remember') ? 'checked' : '' }}>
-                        <label for="remember" class="text-sm text-gray-700">Ingat Saya</label>
-                    </div>
-                </div>
-                
                 <div class="flex items-center justify-center">
                     <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
                         Login

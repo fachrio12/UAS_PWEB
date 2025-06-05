@@ -18,10 +18,13 @@
                         <!-- Admin Links -->
                         <a href="{{ route('admin.dashboard') }}" class="text-white hover:text-yellow-200 transition">Dashboard</a>
                         <a href="{{ route('admin.assessments') }}" class="text-white hover:text-yellow-200 transition">Kelola Asesmen</a>
+
                     @else
                         <!-- User Links -->
                         <a href="{{ route('user.assessments') }}" class="text-white hover:text-yellow-200 transition">Asesmen</a>
                         <a href="{{ route('user.progress') }}" class="text-white hover:text-yellow-200 transition">Perkembangan</a>
+                        <a href="https://wa.me/628980479370?text=halo%20admin%20neura%20saya%20ingin%20berkonsultasi%20tentang%20%3A%20..." target="_blank" class="text-white hover:text-yellow-200 transition">Konsultasi</a>
+
                     @endif
                     
                     <a href="{{ route(Auth::user()->role_id == 1 ? 'admin.profile' : 'user.profile') }}" class="text-white hover:text-yellow-200 transition">Profil</a>

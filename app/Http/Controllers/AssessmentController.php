@@ -15,50 +15,51 @@ class AssessmentController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string',
         ]);
+
         $validated['is_active'] = true;
-    
+        $validated['date_created'] = now(); 
+
         $assessment = Assessment::create($validated);
 
         return redirect()->route('admin.questions', $assessment->id)
-        ->with('success', 'Asesmen berhasil dibuat, silakan tambahkan pertanyaan!');
+            ->with('success', 'Asesmen berhasil dibuat, silakan tambahkan pertanyaan!');
     }
-    
+
     public function update(Request $request, Assessment $assessment)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'description' => 'required|string',
-            'is_active' => 'boolean',
+            'is_active' => 'required|boolean',
         ]);
-        
+
         $assessment->update($validated);
-        
+
         return redirect()->route('admin.assessments')
-            ->with('success', 'Asesmen berhasil diperbarui!');
+            ->with('success', 'Status asesmen berhasil diperbarui!');
     }
+
     
-    public function destroy(Assessment $assessment)
-    {
-        // Check if assessment has been used in sessions
-        $hasBeenUsed = $assessment->sessions()->exists();
+    // public function destroy(Assessment $assessment)
+    // {
+    //     // Check if assessment has been used in sessions
+    //     $hasBeenUsed = $assessment->sessions()->exists();
         
-        if ($hasBeenUsed) {
-            return redirect()->route('admin.assessments')
-                ->with('error', 'Asesmen tidak dapat dihapus karena sudah digunakan oleh pengguna.');
-        }
+    //     if ($hasBeenUsed) {
+    //         return redirect()->route('admin.assessments')
+    //             ->with('error', 'Asesmen tidak dapat dihapus karena sudah digunakan oleh pengguna.');
+    //     }
         
-        // Delete all related questions and options
-        foreach ($assessment->questions as $question) {
-            $question->options()->delete();
-        }
-        $assessment->questions()->delete();
+       
+    //     foreach ($assessment->questions as $question) {
+    //         $question->options()->delete();
+    //     }
+    //     $assessment->questions()->delete();
         
-        // Delete the assessment
-        $assessment->delete();
+    //     // Delete the assessment
+    //     $assessment->delete();
         
-        return redirect()->route('admin.assessments')
-            ->with('success', 'Asesmen berhasil dihapus!');
-    }
+    //     return redirect()->route('admin.assessments')
+    //         ->with('success', 'Asesmen berhasil dihapus!');
+    // }
     
     public function storeQuestion(Request $request)
     {
@@ -89,9 +90,18 @@ class AssessmentController extends Controller
 
     public function multiStore(Request $request)
 {
-    foreach ($request->questions as $questionData) {
+    $validated = $request->validate([
+        'assessment_id' => 'required|exists:assessments,id',
+        'questions' => 'required|array|min:1',
+        'questions.*.question_text' => 'required|string',
+        'questions.*.options' => 'required|array|min:1',
+        'questions.*.options.*.option_text' => 'required|string',
+        'questions.*.options.*.score' => 'required|integer',
+    ]);
+
+    foreach ($validated['questions'] as $questionData) {
         $question = Question::create([
-            'assessment_id' => $request->assessment_id,
+            'assessment_id' => $validated['assessment_id'],
             'question_text' => $questionData['question_text'],
         ]);
 
@@ -104,8 +114,9 @@ class AssessmentController extends Controller
         }
     }
 
-    return redirect()->back()->with('success', 'Semua pertanyaan berhasil ditambahkan!');
+    return redirect()->route('admin.dashboard')->with('success', 'Semua pertanyaan berhasil ditambahkan!');
 }
+
 
     
     public function updateQuestion(Request $request, Question $question)
