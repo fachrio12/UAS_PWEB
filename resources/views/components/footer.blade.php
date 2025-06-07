@@ -5,7 +5,7 @@
                 <h2 class="text-xl font-bold">
                     <span class="text-yellow-300">NEURA</span>
                 </h2>
-                <p class="text-gray-400 mt-2">Platform asesmen dengan pendekatan gamifikasi</p>
+                <p class="text-gray-400 mt-2">Platform asesmen interaktif dan berkelanjutan</p>
             </div>
             
             <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
