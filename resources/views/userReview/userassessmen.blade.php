@@ -6,7 +6,6 @@
 <div class="min-h-screen bg-gray-100 py-8">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto">
-            <!-- Header -->
             <div class="bg-white shadow-md rounded-lg p-6 mb-6">
                 <div class="flex items-center justify-between">
                     <div>
@@ -20,7 +19,6 @@
                 </div>
             </div>
 
-            <!-- Progress Bar -->
             <div class="bg-white shadow-md rounded-lg p-4 mb-6">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Progress</span>
@@ -31,7 +29,6 @@
                 </div>
             </div>
 
-            <!-- Assessment Form -->
             <form action="{{ route('user.assessments.submit', $assessment->id) }}" method="POST" id="assessment-form">
                 @csrf
                 
@@ -64,7 +61,6 @@
                     </div>
                 @endforeach
 
-                <!-- Submit Button -->
                 <div class="bg-white shadow-md rounded-lg p-6">
                     <div class="text-center">
                         <div class="mb-4">
@@ -94,7 +90,6 @@
     </div>
 </div>
 
-<!-- Confirmation Modal -->
 <div id="confirm-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 max-w-md mx-4">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Konfirmasi Pengiriman</h3>
@@ -122,12 +117,10 @@
     const totalQuestions = {{ $questions->count() }};
     let answeredQuestions = 0;
 
-    // Update progress when option is selected
     document.querySelectorAll('.option-input').forEach(input => {
         input.addEventListener('change', function() {
             updateProgress();
             
-            // Visual feedback for selected option
             const questionCard = this.closest('.question-card');
             const labels = questionCard.querySelectorAll('.option-label');
             labels.forEach(label => label.classList.remove('border-blue-500', 'bg-blue-50'));
@@ -137,7 +130,6 @@
     });
 
     function updateProgress() {
-        // Count answered questions
         const questionNumbers = new Set();
         document.querySelectorAll('.option-input:checked').forEach(input => {
             questionNumbers.add(input.dataset.question);
@@ -149,7 +141,6 @@
         document.getElementById('progress-bar').style.width = progressPercentage + '%';
         document.getElementById('progress-text').textContent = `${answeredQuestions} dari ${totalQuestions}`;
         
-        // Update submit button state
         const submitBtn = document.getElementById('submit-btn');
         const incompleteMsg = document.getElementById('incomplete-message');
         
@@ -185,7 +176,6 @@
         document.getElementById('assessment-form').submit();
     }
 
-    // Prevent accidental page reload
     window.addEventListener('beforeunload', function(e) {
         if (answeredQuestions > 0 && answeredQuestions < totalQuestions) {
             e.preventDefault();
@@ -193,7 +183,6 @@
         }
     });
 
-    // Auto-save to localStorage (optional - for recovery)
     function autoSave() {
         const formData = new FormData(document.getElementById('assessment-form'));
         const answers = {};
@@ -207,7 +196,6 @@
         localStorage.setItem('assessment_' + {{ $assessment->id }}, JSON.stringify(answers));
     }
 
-    // Load saved answers (optional)
     function loadSavedAnswers() {
         const saved = localStorage.getItem('assessment_' + {{ $assessment->id }});
         if (saved) {
@@ -222,16 +210,13 @@
         }
     }
 
-    // Save answers periodically
-    setInterval(autoSave, 30000); // Save every 30 seconds
+    setInterval(autoSave, 30000); 
 
-    // Load saved answers on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadSavedAnswers();
         updateProgress();
     });
 
-    // Clear saved data on form submit
     document.getElementById('assessment-form').addEventListener('submit', function() {
         localStorage.removeItem('assessment_' + {{ $assessment->id }});
     });

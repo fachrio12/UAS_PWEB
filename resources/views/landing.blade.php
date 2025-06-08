@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-gray-50">
     <section class="gradient-bg text-white pt-24 pb-16 rounded-b-3xl shadow-lg">
-        <div class="mx-auto px-4 max-w-4xl"> <!-- Diubah dari "container" ke "mx-auto max-w-4xl" -->
+        <div class="mx-auto px-4 max-w-4xl">
             <div class="flex flex-col lg:flex-row items-center">
                 <div class="lg:w-1/2 mb-12 lg:mb-0 fade-in">
                 <h1 class="text-5xl font-bold mb-6 leading-tight text-inner-shadow">
@@ -17,7 +17,7 @@
                 </p>
 
                     <div class="flex space-x-4">
-                        <a href="/register" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 hover:text-white transition">
+                        <a href="/login" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 hover:text-white transition">
                             Mulai Asesmen
                         </a>
                         <a href="#tentang" class="bg-yellow-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 hover:text-white transition">
@@ -65,7 +65,6 @@
                     </div>
                 </div>
 
-                <!-- Solusi -->
                 <div class="fade-in bg-green-50 p-6 rounded-2xl shadow">
                     <h3 class="text-2xl font-bold text-gray-800 mb-6">Solusi NEURA</h3>
                     <div class="space-y-4">
@@ -87,7 +86,6 @@
         </div>
     </section>
 
-    <!-- CTA -->
     <section class="gradient-bg text-white py-16 mt-16 rounded-t-3xl shadow-inner">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-6 leading-tight text-inner-shadow">Mulai Perjalanan Penemuan Diri Anda</h2>

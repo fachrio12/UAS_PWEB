@@ -8,9 +8,7 @@
     <p class="text-gray-600">Selamat datang, {{ $username }}!</p>
 </div>
 
-<!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <!-- Total Users -->
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
@@ -24,8 +22,7 @@
             </div>
         </div>
     </div>
-    
-    <!-- Total Assessments -->
+
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-green-100 text-green-600">
@@ -39,8 +36,7 @@
             </div>
         </div>
     </div>
-    
-    <!-- Completed Sessions -->
+
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-purple-100 text-purple-600">
@@ -56,7 +52,6 @@
     </div>
 </div>
 
-<!-- Recent Sessions -->
 <div class="bg-white rounded-lg shadow-md p-6 mb-8">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Sesi Asesmen Terkini</h2>
     
@@ -94,9 +89,8 @@
 </div>
 
 
- <!-- Daftar Akun Pengguna -->
  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Akun Pengguna</h2>
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Data Pengguna</h2>
 
     @if($users->count() > 0)
         <div class="overflow-x-auto">
@@ -126,9 +120,8 @@
     @endif
 </div>
 
-<!-- Quick Actions -->
 <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Aksi Cepat</h2>
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Asesmen</h2>
     
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <a href="{{ route('admin.assessments') }}" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 p-4 rounded-lg flex items-center transition">

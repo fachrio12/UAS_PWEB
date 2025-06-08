@@ -2,8 +2,8 @@
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('home') }}" class="font-bold text-xl">
-                    <span class="text-yellow-300">NEURA</span>
+            <a href="{{ Auth::check() ? (Auth::user()->role_id == 1 ? route('admin.dashboard') : route('user.assessments')) : route('home') }}" class="font-bold text-xl">
+                <span class="text-yellow-300">NEURA</span>
                 </a>
             </div>
             
