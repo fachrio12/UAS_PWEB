@@ -28,12 +28,6 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 font-medium">Tanggal Lahir:</label>
-                <input type="date" name="birth_date" value="{{ old('birth_date', \Carbon\Carbon::parse($user->birth_date)->format('Y-m-d')) }}" class="w-full border rounded px-3 py-2 mt-1" required>
-                @error('birth_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mb-4">
                 <label class="block text-gray-700 font-medium">Jenis Kelamin:</label>
                 <select name="gender" class="w-full border rounded px-3 py-2 mt-1" required>
                     <option value="Laki-laki" {{ $user->gender == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>

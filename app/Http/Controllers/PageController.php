@@ -9,6 +9,7 @@ use App\Models\UserAssessmentSession;
 use App\Models\AssessmentResult;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class PageController extends Controller
 {
@@ -37,19 +38,21 @@ class PageController extends Controller
     public function adminDashboard(Request $request)
     {
         $username = $request->query('username', Auth::user()->name);
-
-        // Statistik
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;    
         $totalUsers = User::where('role_id', 2)->count();
         $totalAssessments = Assessment::count();
         $totalCompletedSessions = UserAssessmentSession::count();
 
-        // Sesi terkini
+        $totalCompletedSessions = UserAssessmentSession::whereMonth('taken_at', $currentMonth)
+        ->whereYear('taken_at', $currentYear)
+        ->count();
+
         $recentSessions = UserAssessmentSession::with(['user', 'assessment'])
             ->orderBy('taken_at', 'desc')
             ->take(5)
             ->get();
 
-        // Ambil semua user (role_id = 2)
         $users = User::where('role_id', 2)->orderBy('created_at', 'desc')->get();
 
         return view('dashboard', compact('username', 'totalUsers', 'totalAssessments', 'totalCompletedSessions',
@@ -61,8 +64,6 @@ class PageController extends Controller
         $user = Auth::user();
         return view('profile', compact('user'));
     }
-
-    
 
     public function updateAdminProfile(Request $request)
     {
@@ -115,7 +116,6 @@ class PageController extends Controller
 
     public function takeAssessment(Assessment $assessment)
     {
-        // Check if the user has already completed this assessment
         $hasCompleted = UserAssessmentSession::where('user_id', Auth::id())
             ->where('assessment_id', $assessment->id)
             ->exists();
@@ -128,7 +128,7 @@ class PageController extends Controller
         $questions = $assessment->questions()->with('options')->get();
         return view('userReview\userassessmen', compact('assessment', 'questions'));
     }
-    
+
     public function userProfile()
     {
         $user = Auth::user();
@@ -160,15 +160,13 @@ class PageController extends Controller
             ->orderBy('taken_at', 'desc')
             ->get();
             
-        // Group sessions by assessment for the chart data
         $assessmentData = [];
         foreach ($sessions as $session) {
             $assessmentName = $session->assessment->name;
             if (!isset($assessmentData[$assessmentName])) {
                 $assessmentData[$assessmentName] = [];
             }
-            
-            // Get the highest score from results
+
             $maxScore = $session->results->max('score');
             $assessmentData[$assessmentName][] = [
                 'date' => $session->taken_at->format('d M Y'),
@@ -181,7 +179,7 @@ class PageController extends Controller
     
     public function viewResults(UserAssessmentSession $session)
     {
-        // Make sure the user can only view their own results
+
         if ($session->user_id !== Auth::id()) {
             abort(403);
         }
@@ -189,6 +187,6 @@ class PageController extends Controller
         $results = $session->results;
         $assessment = $session->assessment;
         
-        return view('user.results', compact('session', 'results', 'assessment'));
+        return view('userReview\results', compact('session', 'results', 'assessment'));
     }
 }

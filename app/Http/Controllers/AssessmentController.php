@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Assessment;
 use App\Models\Question;
 use App\Models\Option;
+
 
 class AssessmentController extends Controller
 {
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
+            'name' => ['required', Rule::in(Assessment::NAMES)],
             'description' => 'required|string',
         ]);
 
@@ -129,12 +131,10 @@ class AssessmentController extends Controller
             'options.*.score' => 'required|integer',
         ]);
         
-        // Update question
         $question->update([
             'question_text' => $validated['question_text'],
         ]);
-        
-        // Handle options
+
         $existingOptionIds = [];
         
         foreach ($validated['options'] as $optionData) {

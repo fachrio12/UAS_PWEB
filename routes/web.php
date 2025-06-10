@@ -57,4 +57,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/update', [PageController::class, 'updateUserProfile'])->name('user.profile.update');
     Route::get('/progress', [PageController::class, 'userProgress'])->name('user.progress');
     Route::get('/results/{session}', [PageController::class, 'viewResults'])->name('user.results');
+
 });

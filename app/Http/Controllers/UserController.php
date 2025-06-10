@@ -18,14 +18,12 @@ class UserController extends Controller
             'answers' => 'required|array',
             'answers.*' => 'required|exists:options,id',
         ]);
-        
-        // Create a new assessment session
+
         $session = UserAssessmentSession::create([
             'user_id' => Auth::id(),
             'assessment_id' => $assessment->id,
         ]);
         
-        // Record user answers
         foreach ($validated['answers'] as $questionId => $optionId) {
             UserAnswer::create([
                 'session_id' => $session->id,
@@ -33,8 +31,7 @@ class UserController extends Controller
                 'option_id' => $optionId,
             ]);
         }
-        
-        // Process and calculate results
+
         $this->calculateResults($session);
         
         return redirect()->route('user.results', $session->id)
@@ -43,47 +40,71 @@ class UserController extends Controller
     
     private function calculateResults(UserAssessmentSession $session)
     {
-        // Get all answers from the session
-        $answers = $session->answers()->with('option')->get();
-        
-        // Example: Calculate results based on total scores
-        // Group by some category (this would depend on your specific assessment logic)
+        $answers = $session->answers()->with('option')->get();   
         $categories = [];
-        
-        // For this example, we'll just use a simple summing of scores
         $totalScore = 0;
         
         foreach ($answers as $answer) {
             $totalScore += $answer->option->score;
         }
-        
-        // Create a simple result
+
         AssessmentResult::create([
             'session_id' => $session->id,
             'result_category' => 'Overall Score',
             'score' => $totalScore,
-            'interpretation' => $this->getInterpretation($totalScore),
-        ]);
+            'interpretation' => $this->getInterpretation($totalScore, $session->assessment->name),
+        ]);        
         
-        // Example for motivation factors (simplified)
         MotivationFactor::create([
             'session_id' => $session->id,
             'factor_name' => 'Engagement',
-            'score' => min(100, $totalScore * 5), // Just a sample calculation
+            'score' => min(100, $totalScore * 5), 
         ]);
     }
     
-    private function getInterpretation($score)
-    {
-        // Simple interpretation logic - you would customize this based on your assessment type
-        if ($score >= 80) {
-            return 'Anda memiliki pemahaman yang sangat baik. Pertahankan!';
-        } elseif ($score >= 60) {
-            return 'Anda memiliki pemahaman yang baik. Terus tingkatkan!';
-        } elseif ($score >= 40) {
-            return 'Anda memiliki pemahaman yang cukup. Ada beberapa area yang perlu ditingkatkan.';
+    private function getInterpretation($score, $assessmentName)
+{
+    // Normalisasi nama untuk memudahkan pencocokan
+    $type = strtolower($assessmentName);
+
+    if ($type === 'minat bakat') {
+        if ($score < 50) {
+            return 'Hasil menunjukkan kamu cenderung memiliki potensi di bidang non-akademik seperti seni, olahraga, atau keterampilan vokasional. Pertimbangkan mengembangkan bakatmu di area tersebut 🌟';
         } else {
-            return 'Anda perlu meningkatkan pemahaman. Silakan pelajari lebih lanjut.';
+            return 'Kamu memiliki kecenderungan kuat di bidang akademik. Cobalah mengeksplorasi bidang seperti sains, matematika, atau literasi ✨';
         }
     }
+
+    elseif ($type === 'kecenderungan otak (kanan/kiri)') {
+        if ($score <= 50) {
+            return 'Kamu cenderung dominan otak kanan. Ini berarti kamu mungkin lebih kreatif, intuitif, imajinatif, dan ekspresif. Cocok di bidang seni, desain, atau ide-ide orisinal 🎨';
+        } else {
+            return 'Kamu cenderung dominan otak kiri. Kamu lebih logis, sistematis, dan analitis. Cocok di bidang sains, teknologi, matematika, dan strategi 📘';
+        }
+    }
+
+    elseif ($type === 'motivasi belajar') {
+        if ($score < 50) {
+            return 'Motivasi belajar kamu saat ini masih perlu ditingkatkan. Cobalah membuat tujuan belajar yang jelas dan menemukan cara belajar yang menyenangkan 💪📚';
+        } else {
+            return 'Motivasi belajar kamu sudah berada di tingkat baik. Pertahankan semangatmu dan terus belajar dengan konsisten! 🚀';
+        }
+    }
+
+    elseif ($type === 'gaya belajar') {
+        if ($score >= 1 && $score <= 30) {
+            return 'Gaya belajar kamu adalah *Auditori*. Kamu belajar lebih baik dengan mendengarkan, seperti melalui diskusi, rekaman, atau penjelasan verbal 🎧';
+        } elseif ($score >= 31 && $score <= 60) {
+            return 'Gaya belajar kamu adalah *Visual*. Kamu menyerap informasi lebih efektif melalui gambar, warna, diagram, dan tampilan visual lainnya 🖼';
+        } elseif ($score >= 61 && $score <= 100) {
+            return 'Gaya belajar kamu adalah *Kinestetik*. Kamu belajar terbaik melalui pengalaman langsung, praktik, atau aktivitas fisik ✋🧠';
+        } else {
+            return 'Skor tidak valid untuk gaya belajar. Harap cek kembali input asesmen.';
+        }
+    }
+
+    // Default jika tipe tidak dikenali
+    return 'Interpretasi tidak tersedia untuk jenis asesmen ini.';
+}
+
 }

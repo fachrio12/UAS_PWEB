@@ -21,8 +21,14 @@
             @csrf
 
             <div class="mb-4">
-                <label for="name" class="block text-gray-700 font-medium mb-1">Nama Asesmen</label>
-                <input type="text" name="name" id="name" class="w-full border rounded px-3 py-2" value="{{ old('name') }}" required>
+                <label for="name" class="block text-gray-700 font-medium mb-1">Jenis Assessment</label>
+                <select name="name" id="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="" disabled selected>Pilih jenis assessment</option>
+                    <option value="Minat Bakat">Minat Bakat</option>
+                    <option value="Motivasi Belajar">Motivasi Belajar</option>
+                    <option value="Gaya Belajar">Gaya Belajar</option>
+                    <option value="Kecenderungan Otak (Kanan/Kiri)">Kecenderungan Otak (Kanan/Kiri)</option>
+                </select>
             </div>
 
             <div class="mb-4">
@@ -31,6 +37,9 @@
             </div>
 
             <div class="text-center">
+                <button type="button" onclick="history.back()" class="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-700 transition">
+                    Kembali
+                </button>
                 <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">Lanjutkan</button>
             </div>
         </form>

@@ -45,7 +45,7 @@
                 </svg>
             </div>
             <div class="ml-4">
-                <h2 class="text-lg font-semibold text-gray-700">Sesi Selesai</h2>
+                <h2 class="text-lg font-semibold text-gray-700">Sesi Selesai bulan ini</h2>
                 <p class="text-2xl font-bold text-gray-800">{{ $totalCompletedSessions }}</p>
             </div>
         </div>

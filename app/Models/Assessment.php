@@ -15,6 +15,18 @@ class Assessment extends Model
         'date_created', 
     ];
 
+    public const NAMES = [
+        'Minat Bakat',
+        'Motivasi Belajar',
+        'Gaya Belajar',
+        'Kecenderungan Otak (Kanan/Kiri)',
+    ];
+
+    public static function getNameOptions()
+    {
+        return self::NAMES;
+    }
+
     protected $casts = [
         'is_active' => 'boolean',
         'date_created' => 'datetime', 

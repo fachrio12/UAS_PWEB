@@ -51,7 +51,9 @@
 @section('scripts')
 <script>
     let questionIndex = 1;
+    let formSubmitted = false;
 
+    // Tambah pertanyaan baru
     function addQuestion() {
         const wrapper = document.getElementById('questions-wrapper');
 
@@ -79,6 +81,7 @@
         updateQuestionNumbers();
     }
 
+    // Tambah opsi baru ke dalam pertanyaan
     function addOption(button) {
         const questionBlock = button.closest('.question-block');
         const optionWrapper = questionBlock.querySelector('.option-wrapper');
@@ -114,13 +117,78 @@
         });
     }
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-    const questionCount = document.querySelectorAll('.question-block').length;
-    if (questionCount === 0) {
-        e.preventDefault(); // Batalkan submit
-        alert('Tambahkan minimal satu pertanyaan sebelum menyimpan.');
+    // Function untuk handle beforeunload
+    function handleBeforeUnload(e) {
+        if (!formSubmitted) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
     }
-});
+
+    // // Function untuk handle popstate
+    // function handlePopState() {
+    //     if (!formSubmitted) {
+    //         history.pushState(null, null, location.href);
+    //         alert('Harap selesaikan dan simpan semua pertanyaan terlebih dahulu sebelum meninggalkan halaman.');
+    //     }
+    // }
+
+    // Event listener untuk form submit (harus didaftarkan PERTAMA)
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const questionCount = document.querySelectorAll('.question-block').length;
+        if (questionCount === 0) {
+            e.preventDefault();
+            alert('Tambahkan minimal satu pertanyaan sebelum menyimpan.');
+            return;
+        }
+
+        // Set formSubmitted SEBELUM validasi lainnya
+        formSubmitted = true;
+        
+        // Nonaktifkan SEMUA peringatan keluar halaman
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        window.removeEventListener('popstate', handlePopState);
+    });
+
+    // Cegah logout jika form belum disimpan - cari dengan berbagai cara
+    const logoutForm = document.getElementById('logout-form');
+    const logoutLinks = document.querySelectorAll('a[href*="logout"], form[action*="logout"]');
+    
+    if (logoutForm) {
+        logoutForm.addEventListener('submit', function (e) {
+            if (!formSubmitted) {
+                e.preventDefault();
+                alert('Harap selesaikan dan simpan semua pertanyaan terlebih dahulu sebelum logout.');
+            }
+        });
+    }
+
+    // Cegah logout melalui link
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            if (!formSubmitted) {
+                e.preventDefault();
+                alert('Harap selesaikan dan simpan semua pertanyaan terlebih dahulu sebelum logout.');
+            }
+        });
+    });
+
+    // Cegah navigasi melalui link jika form belum disimpan
+    document.querySelectorAll('.block-navigation').forEach(link => {
+        link.addEventListener('click', function (e) {
+            if (!formSubmitted) {
+                e.preventDefault();
+                alert('Harap selesaikan dan simpan semua pertanyaan terlebih dahulu sebelum meninggalkan halaman.');
+            }
+        });
+    });
+
+    // Daftarkan event beforeunload
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Tangani tombol back browser
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', handlePopState);
 </script>
 
 @endsection
